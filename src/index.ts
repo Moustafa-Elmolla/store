@@ -1,5 +1,6 @@
 import express, {Application, Request, Response} from 'express';
 import morgan from 'morgan';
+import errorMiddleware from './middleware/error.,middleware';
 
 
 const PORT = 3000;
@@ -9,6 +10,9 @@ const app: Application = express();
 app.use(morgan('common'));
 // middleware to parse incoming requests
 app.use(express.json());
+
+// Error middleware handling
+app.use(errorMiddleware);
 
 //add routing
 app.get('/', (req: Request, res: Response) => {
