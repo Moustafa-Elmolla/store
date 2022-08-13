@@ -13,15 +13,6 @@ app.use(morgan('common'));
 // middleware to parse incoming requests
 app.use(express.json());
 
-db.connect().then((client) => {
-    return client.query('SELECT NOW()').then((res) => {
-        client.release();
-        console.log(res.rows);
-    }).catch((err) => {
-        client.release();
-        console.log(err.stack);
-    });
-});
 
 // Error middleware handling
 app.use(errorMiddleware);
