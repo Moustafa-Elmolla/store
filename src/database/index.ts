@@ -7,11 +7,11 @@ const pool = new Pool({
     database: config.database,
     user: config.user,
     password: config.password,
-    max: 4,
+    // max: 4,
 });
 
-pool.on('error', (error: Error) => {
-    console.error(error.message);
-});
+// pool.on('error', (error: Error) => {
+//     console.error(error.message);
+// });
 
 export default pool;

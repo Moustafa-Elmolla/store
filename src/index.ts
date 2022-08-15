@@ -1,9 +1,8 @@
 import express, {Application, Request, Response} from 'express';
+import routes from './routes';
 import morgan from 'morgan';
 import errorMiddleware from './middleware/error.,middleware';
 import config from './config';
-import db from './database';
-
 
 const PORT = config.port || 3000;
 //create server
@@ -13,21 +12,15 @@ app.use(morgan('common'));
 // middleware to parse incoming requests
 app.use(express.json());
 
-
 // Error middleware handling
 app.use(errorMiddleware);
+
+app.use('/api', routes);
 
 //add routing
 app.get('/', (req: Request, res: Response) => {
     res.json({
         message: 'Hello World',
-    });
-});
-
-app.post('/', (req: Request, res: Response) => {
-    res.json({
-        message: 'Hello World from post',
-        data: req.body,
     });
 });
 
