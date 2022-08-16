@@ -1,5 +1,12 @@
+import bcrypt from 'bcrypt';
 import db from '../database';
 import User from "../types/user.type";
+import config from '../config';
+
+const hashPassword = (password: string) => {
+    const salt = parseInt(config.salt as string, 5);
+    return bcrypt.hashSync(`${password}${config.pepper}`, salt);
+};
 
 class UserModel {
     //create
@@ -7,13 +14,13 @@ class UserModel {
         try {
             const connection = await db.connect();
             const sql = `INSERT INTO users (email, user_name, first_name, last_name, password)
-            values ($1, $2, $3, $4, $5) returning *`;
+            values ($1, $2, $3, $4, $5) returning id, email, user_name, first_name, last_name`;
             const result = await connection.query(sql, [
                 u.email,
                 u.user_name,
                 u.first_name,
                 u.last_name,
-                u.password,
+                hashPassword(u.password),
             ]);
             connection.release();
             return result.rows[0];
@@ -53,7 +60,14 @@ class UserModel {
         try {
             const connection = await db.connect();
             const sql = `UPDATE users SET email=$1, user_name=$2, first_name=$3, last_name=$4, password=$5 WHERE id=$6 RETURNING *`;
-            const result = await connection.query(sql, [u.email, u.user_name, u.first_name, u.last_name, u.password, u.id]);
+            const result = await connection.query(sql, [
+                u.email, 
+                u.user_name, 
+                u.first_name, 
+                u.last_name, 
+                hashPassword(u.password), 
+                u.id
+            ]);
             connection.release();
             return result.rows[0];
         } catch (error) {
@@ -73,6 +87,27 @@ class UserModel {
         }
     }
     //auth user
+    async authenticate(email: string, password: string): Promise<User | null> {
+        try {
+            const connection = await db.connect();
+            const sql = 'SELECT password FROM users WHERE email=$1';
+            const result = await connection.query(sql, [email]);
+            if (result.rows.length) {
+                const {password: hashPassword} = result.rows[0];
+                const isValid = bcrypt.compareSync(`${password}${config.pepper}`, hashPassword);
+                if (isValid) {
+                    const userInfo = await connection.query(
+                        'SELECT id, email, user_name, first_name, last_name FROM users WHERE email=($1)',[email]
+                    );
+                    return userInfo.rows[0];
+                }
+            }
+            connection.release();
+            return null;
+        } catch (error) {
+            throw new Error(`Unable to login: ${(error as Error).message}`); 
+        }
+    }
 }
 
 export default UserModel;
