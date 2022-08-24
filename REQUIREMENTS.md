@@ -5,36 +5,38 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 #### Products
-- Index 
-- Show
-- Create [token required]
+- Index `localhost:3000/products` [GET]
+- Show `localhost:3000/products/:id` [GET]
+- Create [token required] `localhost:3000/products` [POST]
 - [OPTIONAL] Top 5 most popular products 
 - [OPTIONAL] Products by category (args: product category)
 
 #### Users
-- Index [token required]
-- Show [token required]
-- Create N[token required]
+- Index [token required] `localhost:3000/users` [GET]
+- Show [token required] `localhost:3000/users/:id` [GET]
+- Create N[token required] `localhost:3000/users/` [POST]
+- [EXTRA] Delete : `localhost:3000/users/:id` [DELETE]
 
 #### Orders
-- Current Order by user (args: user id)[token required]
+- Current Order by user (args: user id)[token required] `localhost:3000/orders/:UserId` [GET]
 - [OPTIONAL] Completed Orders by user (args: user id)[token required]
 
 ## Data Shapes
 #### Product
--  id
+-  id (uuid)
 - name
 - price
 - [OPTIONAL] category
 
 #### User
-- id
+- id (uuid)
+- userName
 - firstName
 - lastName
 - password
 
 #### Orders
-- id
+- id (SERIAL)
 - id of each product in the order
 - quantity of each product in the order
 - user_id
