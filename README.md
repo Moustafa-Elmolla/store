@@ -29,6 +29,6 @@
 
 ## Run and test
 
-### -for creating database table use: db-migrate up
-### -for run the server use: npm run dev
-### -for test use: npm run test
+#### -for creating database table use: `db-migrate up`
+#### -for run the server use: `npm run dev`
+#### -for test use: `npm run test`
