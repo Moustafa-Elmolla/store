@@ -15,12 +15,13 @@ app.use(express.json());
 // Error middleware handling
 app.use(errorMiddleware);
 
+//add routing
 app.use('/api', routes);
 
 //add routing
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
     res.json({
-        message: 'Hello World',
+        message: 'Connected to server'
     });
 });
 

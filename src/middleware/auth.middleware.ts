@@ -4,10 +4,10 @@ import config from '../config';
 import jwt from 'jsonwebtoken';
 
 const handleError = (next: NextFunction) => {
-    const error: Error = new Error('login error: Try Again');
-        error.status = 401;
-        next(error);
-};
+    const error: Error = new Error('Login Error, Please try again')
+        error.status = 401
+        next(error)
+}
 
 const validToken = (req: Request, _res: Response, next: NextFunction) => {
     try {

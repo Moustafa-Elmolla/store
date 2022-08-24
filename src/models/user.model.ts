@@ -3,10 +3,8 @@ import db from '../database';
 import User from "../types/user.type";
 import config from '../config';
 
-const hashPassword = (password: string) => {
-    const salt = parseInt(config.salt as string, 5);
-    return bcrypt.hashSync(`${password}${config.pepper}`, salt);
-};
+const saltRounds = process.env.SALT_ROUNDS as string; 
+const pepper = process.env.BCRYPT_PASSWORD as string;
 
 class UserModel {
     //create
@@ -14,13 +12,14 @@ class UserModel {
         try {
             const connection = await db.connect();
             const sql = `INSERT INTO users (email, user_name, first_name, last_name, password)
-            values ($1, $2, $3, $4, $5) returning id, email, user_name, first_name, last_name`;
+            VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+            const hashPassword = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds))
             const result = await connection.query(sql, [
                 u.email,
                 u.user_name,
                 u.first_name,
                 u.last_name,
-                hashPassword(u.password),
+                hashPassword,
             ]);
             connection.release();
             return result.rows[0];
@@ -65,7 +64,7 @@ class UserModel {
                 u.user_name, 
                 u.first_name, 
                 u.last_name, 
-                hashPassword(u.password), 
+                u.password,
                 u.id
             ]);
             connection.release();

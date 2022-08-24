@@ -7,7 +7,6 @@ const pool = new Pool({
     database: config.database,
     user: config.user,
     password: config.password,
-    // max: 4,
 });
 
 // pool.on('error', (error: Error) => {
