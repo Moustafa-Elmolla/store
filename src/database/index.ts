@@ -9,8 +9,8 @@ const pool = new Pool({
     password: config.password,
 });
 
-// pool.on('error', (error: Error) => {
-//     console.error(error.message);
-// });
+pool.on('error', (error: Error) => {
+    console.error(error.message);
+});
 
 export default pool;

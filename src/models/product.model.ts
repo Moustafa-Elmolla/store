@@ -7,13 +7,15 @@ class ProductModel {
         try {
             const connection = await db.connect();
             const sql = `INSERT INTO Products (name, price) VALUES ($1, $2) RETURNING *;`;
-            const result = await connection.query(sql,[p.name, p.price]);
+            const result = await connection.query(sql, [p.name, p.price]);
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Unable to create (${p.name}): ${(error as Error).message}`);
+            throw new Error(
+                `Unable to create (${p.name}): ${(error as Error).message}`
+            );
         }
-    };
+    }
     //get all products
     async getMany(): Promise<Product[]> {
         try {
@@ -23,11 +25,13 @@ class ProductModel {
             connection.release();
             return result.rows;
         } catch (error) {
-            throw new Error(`Error at retrieving products ${(error as Error).message}`);
+            throw new Error(
+                `Error at retrieving products ${(error as Error).message}`
+            );
         }
-    };
+    }
     //get specific product
-    async getOne(id: string): Promise<Product> {
+    async getOne(id: number): Promise<Product> {
         try {
             const sql = `SELECT * FROM products WHERE id=($1)`;
             const connection = await db.connect();
@@ -35,9 +39,11 @@ class ProductModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not find product ${id}, ${(error as Error).message}`);
+            throw new Error(
+                `Could not find product ${id}, ${(error as Error).message}`
+            );
         }
-    };
+    }
     //update product
     async updateOne(p: Product): Promise<Product> {
         try {
@@ -47,11 +53,13 @@ class ProductModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not update user: ${p.name}, ${(error as Error).message}`)
+            throw new Error(
+                `Could not update user: ${p.name}, ${(error as Error).message}`
+            );
         }
-    };
-    //delete product 
-    async deleteOne(id: string): Promise<Product> {
+    }
+    //delete product
+    async deleteOne(id: number): Promise<Product> {
         try {
             const connection = await db.connect();
             const sql = `DELETE FROM products WHERE id=($1) RETURNING id, name, price`;
@@ -59,9 +67,11 @@ class ProductModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not delete product ${id}, ${(error as Error).message}`);
+            throw new Error(
+                `Could not delete product ${id}, ${(error as Error).message}`
+            );
         }
-    };
-};
+    }
+}
 
 export default ProductModel;

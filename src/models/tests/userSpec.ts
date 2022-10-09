@@ -1,4 +1,4 @@
-import UserModel from "../user.model";
+import UserModel from '../user.model';
 import db from '../../database';
 import User from '../../types/user.type';
 
@@ -26,67 +26,71 @@ describe('User Model', () => {
         });
     });
     describe('Test User Model Logic', () => {
-        const user = {
+        const userCreated = {
             email: 'test@test.com',
             user_name: 'testuser',
-            first_name: 'moustafa',
-            last_name: 'molla',
-            password: 'moustafa@91',
+            first_name: 'test',
+            last_name: 'user',
+            password: 'test123',
         } as User;
         beforeAll(async () => {
-            const createdUser = await userModel.create(user);
-            user.id = createdUser.id;
+            const createdUser = await userModel.create(userCreated);
+            userCreated.id = createdUser.id;
         });
         afterAll(async () => {
             const connection = await db.connect();
-            const sql = 'DELETE FROM users;';
+            const sql = `DELETE FROM users; \nALTER SEQUENCE users_id_seq RESTART WITH 1;`;
             await connection.query(sql);
             connection.release();
         });
         it('Create method should return new User', async () => {
             const createdUser = await userModel.create({
-                email: 'test1@test.com',
-                user_name: 'testuser',
+                email: 'test2@test.com',
+                user_name: 'testuser2',
                 first_name: 'moustafa',
                 last_name: 'molla',
-                password: 'moustafa@91',
+                password: 'test_user',
             } as User);
             expect(createdUser).toEqual({
                 id: createdUser.id,
-                email: 'test1@test.com',
-                user_name: 'testuser',
+                email: 'test2@test.com',
+                user_name: 'testuser2',
                 first_name: 'moustafa',
                 last_name: 'molla',
             } as User);
         });
-        it('Get Many method should return All available users in Database', async () =>{
+        it('Get Many method should return All available users in Database', async () => {
             const users = await userModel.getMany();
             expect(users.length).toBe(2);
         });
         it('Get One method should return testuser when called with ID', async () => {
-            const returnedUser = await userModel.getOne(user.id as string);
-            expect(returnedUser.id).toBe(user.id);
-            expect(returnedUser.email).toBe(user.email);
-            expect(returnedUser.user_name).toBe(user.user_name);
-            expect(returnedUser.first_name).toBe(user.first_name);
-            expect(returnedUser.last_name).toBe(user.last_name);
+            const returnedUser = await userModel.getOne(
+                userCreated.id as number
+            );
+            expect(returnedUser.id).toBe(userCreated.id);
+            expect(returnedUser.email).toBe(userCreated.email);
+            expect(returnedUser.user_name).toBe(userCreated.user_name);
+            expect(returnedUser.first_name).toBe(userCreated.first_name);
+            expect(returnedUser.last_name).toBe(userCreated.last_name);
         });
         it('Update One method should return user with edited attributes', async () => {
             const updatedUser = await userModel.updateOne({
-                ...user,
-                user_name: 'testuser updated',
+                ...userCreated,
+                user_name: 'testuser_updated',
                 first_name: 'fouad',
                 last_name: 'elmolla',
             });
-            expect(updatedUser.id).toBe(user.id);
-            expect(updatedUser.email).toBe(user.email);
-            expect(updatedUser.user_name).toBe('testuser updated');
+            expect(updatedUser.id).toBe(userCreated.id);
+            expect(updatedUser.email).toBe(userCreated.email);
+            expect(updatedUser.user_name).toBe('testuser_updated');
             expect(updatedUser.first_name).toBe('fouad');
             expect(updatedUser.last_name).toBe('elmolla');
         });
         it('Delete One method should delete user from database', async () => {
-            const deletedUser = await userModel.deleteOne(user.id as string);
-            expect(deletedUser.id).toBe(user.id);
+            const deletedUser = await userModel.deleteOne(
+                userCreated.id as unknown as string
+            );
+            expect(deletedUser.id).toBe(userCreated.id);
         });
     });
 });

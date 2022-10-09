@@ -5,8 +5,8 @@ const routes = Router();
 const dashboard = new dashboardQueries();
 
 routes.get('/', async (_req: Request, res: Response) => {
-    const products = await dashboard.productsInOrders()
-    res.json({status: 'success', data: products});
-})
+    const products = await dashboard.productsInOrders();
+    res.json({ status: 'success', data: products });
+});
 
 export default routes;

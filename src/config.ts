@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { PORT,
+const {
+    PORT,
     NODE_ENV,
     POSTGRES_HOST,
     POSTGRES_PORT,

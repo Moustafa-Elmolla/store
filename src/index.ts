@@ -1,4 +1,4 @@
-import express, {Application, Request, Response} from 'express';
+import express, { Application, Request, Response } from 'express';
 import routes from './routes';
 import morgan from 'morgan';
 import errorMiddleware from './middleware/error.,middleware';
@@ -21,7 +21,7 @@ app.use('/api', routes);
 //add routing
 app.get('/', (_req: Request, res: Response) => {
     res.json({
-        message: 'Connected to server'
+        message: 'Connected to server',
     });
 });
 

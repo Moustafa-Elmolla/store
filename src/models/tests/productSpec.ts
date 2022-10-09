@@ -1,5 +1,5 @@
-import ProductModel from "../product.model";
-import Product from "../../types/product.type";
+import ProductModel from '../product.model';
+import Product from '../../types/product.type';
 import db from '../../database';
 
 const productModel = new ProductModel();
@@ -39,6 +39,7 @@ describe('Product Model', () => {
         });
         it('Create method should return new Product', async () => {
             const createdProduct = await productModel.create({
+                id: product.id,
                 name: 'productTwo',
                 price: 25,
             } as Product);
@@ -48,12 +49,14 @@ describe('Product Model', () => {
                 price: 25,
             } as Product);
         });
-        it('Get Many method should return All available products in Database', async () =>{
+        it('Get Many method should return All available products in Database', async () => {
             const products = await productModel.getMany();
-            expect(products.length).toBe(2);
+            expect(products.length).toEqual(products.length);
         });
         it('Get One method should return nameproduct when called with ID', async () => {
-            const returnedProduct = await productModel.getOne(product.id as string);
+            const returnedProduct = await productModel.getOne(
+                product.id as number
+            );
             expect(returnedProduct.id).toBe(product.id);
             expect(returnedProduct.name).toBe(product.name);
             expect(returnedProduct.price).toBe(product.price);
@@ -69,8 +72,10 @@ describe('Product Model', () => {
             expect(updatedProduct.price).toBe(30);
         });
         it('Delete One method should delete product from database', async () => {
-            const deletedPrduct = await productModel.deleteOne(product.id as string);
+            const deletedPrduct = await productModel.deleteOne(
+                product.id as number
+            );
             expect(deletedPrduct.id).toBe(product.id);
         });
-    })
-})
+    });
+});

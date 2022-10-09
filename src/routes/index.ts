@@ -10,5 +10,4 @@ routes.use('/products', productsRoutes);
 routes.use('/orders', orderRoutes);
 routes.use('/products_in_orders', dashboardRoutes);
 
-
 export default routes;

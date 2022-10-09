@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import db from '../database';
-import User from "../types/user.type";
+import User from '../types/user.type';
 import config from '../config';
 
-const saltRounds = process.env.SALT_ROUNDS as string; 
+const saltRounds = process.env.SALT_ROUNDS as string;
 const pepper = process.env.BCRYPT_PASSWORD as string;
 
 class UserModel {
@@ -13,7 +13,10 @@ class UserModel {
             const connection = await db.connect();
             const sql = `INSERT INTO users (email, user_name, first_name, last_name, password)
             VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-            const hashPassword = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds))
+            const hashPassword = bcrypt.hashSync(
+                u.password + pepper,
+                parseInt(saltRounds)
+            );
             const result = await connection.query(sql, [
                 u.email,
                 u.user_name,
@@ -23,35 +26,39 @@ class UserModel {
             ]);
             connection.release();
             return result.rows[0];
-
         } catch (error) {
-            throw new Error(`Unable to create (${u.user_name}): ${(error as Error).message}`);
+            throw new Error(
+                `Unable to create (${u.user_name}): ${(error as Error).message}`
+            );
         }
     }
     //get all users
     async getMany(): Promise<User[]> {
         try {
             const connection = await db.connect();
-            const sql = 'SELECT id, email, user_name, first_name, last_name, password from users';
+            const sql =
+                'SELECT id, email, user_name, first_name, last_name, password from users';
             const result = await connection.query(sql);
             connection.release();
             return result.rows;
         } catch (error) {
-            throw new Error(`Error at retrieving users ${(error as Error).message}`);
+            throw new Error(
+                `Error at retrieving users ${(error as Error).message}`
+            );
         }
     }
     //get specific user
-    async getOne(id: string): Promise<User> {
+    async getOne(id: number): Promise<User> {
         try {
-            const sql = 
-            `SELECT id, email, user_name, first_name, last_name, password FROM users WHERE id=($1)`;
+            const sql = `SELECT id, email, user_name, first_name, last_name, password FROM users WHERE id=($1)`;
             const connection = await db.connect();
             const result = await connection.query(sql, [id]);
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not find user ${id}, ${(error as Error).message}`);
-            
+            throw new Error(
+                `Could not find user ${id}, ${(error as Error).message}`
+            );
         }
     }
     //update user
@@ -60,20 +67,24 @@ class UserModel {
             const connection = await db.connect();
             const sql = `UPDATE users SET email=$1, user_name=$2, first_name=$3, last_name=$4, password=$5 WHERE id=$6 RETURNING *`;
             const result = await connection.query(sql, [
-                u.email, 
-                u.user_name, 
-                u.first_name, 
-                u.last_name, 
+                u.email,
+                u.user_name,
+                u.first_name,
+                u.last_name,
                 u.password,
-                u.id
+                u.id,
             ]);
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not update user: ${u.user_name}, ${(error as Error).message}`)
+            throw new Error(
+                `Could not update user: ${u.user_name}, ${
+                    (error as Error).message
+                }`
+            );
         }
     }
-    //delete user 
+    //delete user
     async deleteOne(id: string): Promise<User> {
         try {
             const connection = await db.connect();
@@ -82,7 +93,9 @@ class UserModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not delete user ${id}, ${(error as Error).message}`);
+            throw new Error(
+                `Could not delete user ${id}, ${(error as Error).message}`
+            );
         }
     }
     //auth user
@@ -92,11 +105,15 @@ class UserModel {
             const sql = 'SELECT password FROM users WHERE email=$1';
             const result = await connection.query(sql, [email]);
             if (result.rows.length) {
-                const {password: hashPassword} = result.rows[0];
-                const isValid = bcrypt.compareSync(`${password}${config.pepper}`, hashPassword);
+                const { password: hashPassword } = result.rows[0];
+                const isValid = bcrypt.compareSync(
+                    `${password}${config.pepper}`,
+                    hashPassword
+                );
                 if (isValid) {
                     const userInfo = await connection.query(
-                        'SELECT id, email, user_name, first_name, last_name FROM users WHERE email=($1)',[email]
+                        'SELECT id, email, user_name, first_name, last_name FROM users WHERE email=($1)',
+                        [email]
                     );
                     return userInfo.rows[0];
                 }
@@ -104,7 +121,7 @@ class UserModel {
             connection.release();
             return null;
         } catch (error) {
-            throw new Error(`Unable to login: ${(error as Error).message}`); 
+            throw new Error(`Unable to login: ${(error as Error).message}`);
         }
     }
 }

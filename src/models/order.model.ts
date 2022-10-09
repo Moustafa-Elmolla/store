@@ -11,9 +11,11 @@ class OrderModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Unable to create (${o.status}): ${(error as Error).message}`);
+            throw new Error(
+                `Unable to create (${o.status}): ${(error as Error).message}`
+            );
         }
-    };
+    }
     //get all orders
     async getMany(): Promise<Order[]> {
         try {
@@ -23,11 +25,13 @@ class OrderModel {
             connection.release();
             return result.rows;
         } catch (error) {
-            throw new Error(`Error at retrieving orders ${(error as Error).message}`);
+            throw new Error(
+                `Error at retrieving orders ${(error as Error).message}`
+            );
         }
-    };
+    }
     //get specific order
-    async getOne(id: string): Promise<Order> {
+    async getOne(id: string): Promise<Order[]> {
         try {
             const sql = `SELECT * FROM orders WHERE id=($1)`;
             const connection = await db.connect();
@@ -35,11 +39,13 @@ class OrderModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not find order ${id}, ${(error as Error).message}`);
+            throw new Error(
+                `Could not find order ${id}, ${(error as Error).message}`
+            );
         }
-    };
-    //delete order 
-    async deleteOne(id: string): Promise<Order> {
+    }
+    //delete order
+    async deleteOne(id: string): Promise<Order[]> {
         try {
             const connection = await db.connect();
             const sql = `DELETE FROM orders WHERE id=($1) RETURNING id, status, user_id`;
@@ -47,9 +53,11 @@ class OrderModel {
             connection.release();
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Could not delete order ${id}, ${(error as Error).message}`);
+            throw new Error(
+                `Could not delete order ${id}, ${(error as Error).message}`
+            );
         }
-    };
+    }
 }
 
 export default OrderModel;

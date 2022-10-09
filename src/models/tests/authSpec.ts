@@ -1,4 +1,4 @@
-import UserModel from "../user.model";
+import UserModel from '../user.model';
 import db from '../../database';
 import User from '../../types/user.type';
 
@@ -29,15 +29,20 @@ describe('Authentication Module', () => {
             connection.release();
         });
         it('Authenticate method should return the authentecated user', async () => {
-            const authentecatedUser = await userModel.authenticate
-            (user.email, user.password as string);
+            const authentecatedUser = await userModel.authenticate(
+                user.email,
+                user.password as string
+            );
             expect(authentecatedUser?.email).toBe(user.email);
             expect(authentecatedUser?.user_name).toBe(user.user_name);
             expect(authentecatedUser?.first_name).toBe(user.first_name);
             expect(authentecatedUser?.last_name).toBe(user.last_name);
         });
         it('Authenticate method should return null', async () => {
-            const authentecatedUser = await userModel.authenticate('moustafa@elmolla.com','any-password');
+            const authentecatedUser = await userModel.authenticate(
+                'moustafa@elmolla.com',
+                'any-password'
+            );
             expect(authentecatedUser).toBe(null);
         });
     });
