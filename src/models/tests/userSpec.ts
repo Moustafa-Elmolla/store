@@ -39,7 +39,7 @@ describe('User Model', () => {
         });
         afterAll(async () => {
             const connection = await db.connect();
-            const sql = `DELETE FROM users; \nALTER SEQUENCE users_id_seq RESTART WITH 1;`;
+            const sql = `DELETE FROM users; \n ALTER SEQUENCE users_id_seq RESTART WITH 1;`;
             await connection.query(sql);
             connection.release();
         });
@@ -51,13 +51,11 @@ describe('User Model', () => {
                 last_name: 'molla',
                 password: 'test_user',
             } as User);
-            expect(createdUser).toEqual({
-                id: createdUser.id,
-                email: 'test2@test.com',
-                user_name: 'testuser2',
-                first_name: 'moustafa',
-                last_name: 'molla',
-            } as User);
+            expect(createdUser.email).toEqual('test2@test.com');
+            expect(createdUser.user_name).toEqual('testuser2');
+            expect(createdUser.first_name).toEqual('moustafa');
+            expect(createdUser.last_name).toEqual('molla');
+            expect(createdUser.password).not.toEqual('test_user');
         });
         it('Get Many method should return All available users in Database', async () => {
             const users = await userModel.getMany();
@@ -73,7 +71,7 @@ describe('User Model', () => {
             expect(returnedUser.first_name).toBe(userCreated.first_name);
             expect(returnedUser.last_name).toBe(userCreated.last_name);
         });
-        it('Update One method should return user with edited attributes', async () => {
+        it('Update One method should return user with updated values', async () => {
             const updatedUser = await userModel.updateOne({
                 ...userCreated,
                 user_name: 'testuser_updated',

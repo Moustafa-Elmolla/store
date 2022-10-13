@@ -10,6 +10,7 @@ let token = '';
 
 describe('User API Endpoints', () => {
     const user = {
+        id: 1,
         email: 'test@test.com',
         user_name: 'testuser',
         first_name: 'moustafa',
@@ -22,7 +23,7 @@ describe('User API Endpoints', () => {
     });
     afterAll(async () => {
         const connection = await db.connect();
-        const sql = `ALTER SEQUENCE users_id_seq RESTART WITH 1;`;
+        const sql = `DELETE FROM users; \n ALTER SEQUENCE users_id_seq RESTART WITH 1;`;
         await connection.query(sql);
         connection.release();
     });
@@ -54,19 +55,20 @@ describe('User API Endpoints', () => {
             const res = await request
                 .post('/api/users/')
                 .set('Content-type', 'application/json')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
-                    email: 'test@test.com',
-                    user_name: 'testuser',
-                    first_name: 'moustafa',
-                    last_name: 'molla',
+                    email: 'test2@test2.com',
+                    user_name: 'testuser2',
+                    first_name: 'moustafa2',
+                    last_name: 'molla2',
                     password: 'moustafa@91',
                 } as User);
             expect(res.status).toBe(200);
-            // const { email, user_name, first_name, last_name } = res.body.data;
-            // expect(email).toBe('test@test.com');
-            // expect(user_name).toBe('testuser');
-            // expect(first_name).toBe('moustafa');
-            // expect(last_name).toBe('molla');
+            const { email, user_name, first_name, last_name } = res.body.data;
+            expect(email).toBe('test2@test2.com');
+            expect(user_name).toBe('testuser2');
+            expect(first_name).toBe('moustafa2');
+            expect(last_name).toBe('molla2');
         });
         it('should get list of users', async () => {
             const res = await request
@@ -74,16 +76,14 @@ describe('User API Endpoints', () => {
                 .set('Content-type', 'application/json')
                 .set('Authorization', `Bearer ${token}`);
             expect(res.status).toBe(200);
-            // expect(res.body.data.length).toBe(2);
+            expect(res.body.data.length).toBe(2);
         });
-        it('should get user', async () => {
+        it('should get user by id', async () => {
             const res = await request
                 .get(`/api/users/${user.id}`)
                 .set('Content-type', 'application/json')
                 .set('Authorization', `Bearer ${token}`);
             expect(res.status).toBe(200);
-            // expect(res.body.data.user_name).toBe('testuser');
-            // expect(res.body.data.email).toBe('test@test.com');
         });
         it('should update user', async () => {
             const res = await request
@@ -97,13 +97,6 @@ describe('User API Endpoints', () => {
                     last_name: 'elmolla',
                 });
             expect(res.status).toBe(200);
-            // const { id, email, user_name, first_name, last_name } =
-            //     res.body.data;
-            // expect(id).toBe(user.id);
-            // expect(email).toBe(user.email);
-            // expect(user_name).toBe('moustafaelmolla');
-            // expect(first_name).toBe('moustafa');
-            // expect(last_name).toBe('elmolla');
         });
         it('should delete user', async () => {
             const res = await request
@@ -111,8 +104,6 @@ describe('User API Endpoints', () => {
                 .set('Content-type', 'application/json')
                 .set('Authorization', `Bearer ${token}`);
             expect(res.status).toBe(200);
-            // expect(res.body.data.id).toBe(user.id);
-            // expect(res.body.data.user_name).toBe('moustafaelmolla');
         });
     });
 });
