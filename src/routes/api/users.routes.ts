@@ -66,6 +66,7 @@ routes.get(
 // Update One by ID
 routes.patch(
     '/:id',
+    validToken,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const user = await userModel.updateOne(req.body);
